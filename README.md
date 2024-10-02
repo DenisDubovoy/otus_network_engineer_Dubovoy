@@ -1,1 +1,1 @@
-# otus_network_engineer_Dubovoy
+# Репозиторий лабораторных работ курса "Сетевой инженер" в OTUS.ru Dubovoy
