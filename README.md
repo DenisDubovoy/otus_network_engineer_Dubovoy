@@ -1,4 +1,4 @@
-# Портфолио курса Network Engineer Professional от OTUS
+# Портфолио курса Network Engineer Professional OTUS
 
 В данном курсе будут выкладываться домашние задания из курса.
 
