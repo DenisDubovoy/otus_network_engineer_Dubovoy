@@ -1,0 +1,136 @@
+Current configuration : 1637 bytes
+!
+! Last configuration change at 02:10:09 UTC Sun Oct 27 2024
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service compress-config
+!
+hostname S2
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$WUTD$BaXP4gcJRJvpcDyMmhDC1.
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+ip cef
+no ipv6 cef
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Ethernet0/0
+ shutdown
+!
+interface Ethernet0/1
+ shutdown
+!
+interface Ethernet0/2
+ shutdown
+!
+interface Ethernet0/3
+ shutdown
+!
+interface Ethernet1/0
+ shutdown
+!
+interface Ethernet1/1
+ shutdown
+!
+interface Ethernet1/2
+!
+interface Ethernet1/3
+ shutdown
+!
+interface Ethernet2/0
+ shutdown
+!
+interface Ethernet2/1
+ shutdown
+!
+interface Ethernet2/2
+ shutdown
+!
+interface Ethernet2/3
+ shutdown
+!
+interface Ethernet3/0
+ shutdown
+!
+interface Ethernet3/1
+ shutdown
+!
+interface Ethernet3/2
+ shutdown
+!
+interface Ethernet3/3
+ shutdown
+!
+interface Ethernet4/0
+!
+interface Ethernet4/1
+ shutdown
+!
+interface Ethernet4/2
+ shutdown
+!
+interface Ethernet4/3
+ shutdown
+!
+interface Vlan1
+ ip address 192.168.1.98 255.255.255.240
+!
+ip default-gateway 192.168.1.97
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+!
+!
+control-plane
+!
+banner motd ^C WARNING! Unauthorized access to this device is prohibited. All activities may be monitored and reported to the security authorities. ^C
+!
+line con 0
+ password 7 121A0C041104
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 1511021F0725
+ login
+!
+!
+end
