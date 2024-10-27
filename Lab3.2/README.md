@@ -259,7 +259,7 @@ e.	Examine the output of ipconfig /all and notice the changes.
 
 ![alt text](image-6.png)
 
-*The DNS server has appeared with IPv6 address.*
+*The DNS server has appeared with the IPv6 address.*
 
 f.	Test connectivity by pinging R2’s e0/1 interface IP address.
 
