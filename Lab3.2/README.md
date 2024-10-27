@@ -302,7 +302,9 @@ R2(config-if)# ipv6 dhcp relay destination 2001:db8:acad:2::1 e0/0
 
 ### Step 3: Attempt to acquire an IPv6 address from DHCPv6 on PC-B.
 a.	Restart PC-B.
+
 Ok
+
 b.	Open a command prompt on PC-B and issue the command **ipconfig /all** and examine the output to see the results of the DHCPv6 relay operation.
 
 ![alt text](image-9.png)
