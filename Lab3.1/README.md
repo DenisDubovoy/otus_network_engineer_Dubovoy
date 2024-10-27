@@ -42,48 +42,49 @@ Subnet the network 192.168.1.0/24 to meet the following requirements:
 a.	One subnet, “Subnet A”, supporting 58 hosts (the Clients VLAN at R1).
 Subnet A:
 
-__The least available Subnet A is 192.168.1.0/26 it is maximum 62 hosts.__
+_The least available Subnet A is 192.168.1.0/26 it is maximum 62 hosts._
 
-__255.255.255.192 – subnet mask.__
+_255.255.255.192 – subnet mask._
 
-__192.168.1.0/26 – network.__
+_192.168.1.0/26 – network._
 
-__192.168.1.63 – broadcast address.__
+_192.168.1.63 – broadcast address._
 
 Record the first IP address in the Addressing Table for R1 e0/1.100. 
 
-__192.168.1.1 - e0/1.100 R1 IP address Client VLAN.__
+_192.168.1.1 - e0/1.100 R1 IP address Client VLAN._
 
 b.	One subnet, “Subnet B”, supporting 28 hosts (the Management VLAN at R1). 
 Subnet B:
 
-__The least available Subnet B 192.168.1.64/27 it is maximum 30 hosts.__
+_The least available Subnet B 192.168.1.64/27 it is maximum 30 hosts._
 
-__255.255.255.224 - subnet mask.__
+_255.255.255.224 - subnet mask._
 
-__192.168.1.64/27 – network.__
+_192.168.1.64/27 – network._
 
-__192.168.1.95 – broadcast address.__
+_192.168.1.95 – broadcast address._
 
 Record the first IP address in the Addressing Table for R1 e0/1.200. Record the second IP address in the Address Table for S1 VLAN 200 and enter the associated default gateway.
 
-__192.168.1.65 - e0/1.200 R1 IP address Management VLAN.__
+_192.168.1.65 - e0/1.200 R1 IP address Management VLAN._
 
-__192.168.1.66 – S1 VLAN 200 Management.__
+_192.168.1.66 – S1 VLAN 200 Management._
+
 
 c.	One subnet, “Subnet C”, supporting 12 hosts (the client network at R2).
 Subnet C:
 
-__The least available Subnet С 192.168.1.96/28 it is maximum 14 hosts.__
+_The least available Subnet С 192.168.1.96/28 it is maximum 14 hosts._
 
-__255.255.255.240 - subnet mask.__
+_255.255.255.240 - subnet mask._
 
-__192.168.1.96/28 – network.__
+_192.168.1.96/28 – network._
 
-__192.168.1.111 – broadcast address.__
+_192.168.1.111 – broadcast address._
  
 Record the first IP address in the Addressing Table for R2 e0/1.
-__192.168.1.97/28.__
+_192.168.1.97/28._
 
 ### Final Addressing Table
 ![alt text](image-3.png)
@@ -551,11 +552,11 @@ e.	Issue the **show ip dhcp server statistics** on R1 and R2 to verify DHCP mess
 
 ![alt text](image-22.png)
 
-__It was being done 3 DHCP requests on PC-A и PC-B. So, we see 5 DHCP DISCOVER, 3 DHCP OFFER, 3 DHCP REQUESTS and 3 DHCP ACK messages on R1.__
+*It was being done 3 DHCP requests on PC-A и PC-B. So, we see 5 DHCP DISCOVER, 3 DHCP OFFER, 3 DHCP REQUESTS and 3 DHCP ACK messages on R1.*
 
 ![alt text](image-23.png)
 
-__No messages on R2.__
+*No messages on R2.*
 
 
 
