@@ -217,9 +217,9 @@ After a few moments, the results of the command **ipconfig** should show that PC
 ![alt text](image-4.png)
 
 *__Question:__*
-    Where did the host-id portion of the address come from?
+  Where did the host-id portion of the address come from?
 *__Answer:__*
-	It is generated randomly by Windows 10 host machine.
+  It is generated randomly by Windows 10 host machine.
 
 ## Part 3: Configure and Verify a DHCPv6 server on R1
 In Part 3, you will configure and verify a stateless DHCP server on R1. The objective is to provide PC-A with DNS server and Domain information.
@@ -257,6 +257,7 @@ Ok
 e.	Examine the output of ipconfig /all and notice the changes.
 
 ![alt text](image-6.png)
+
 *The DNS server has appeared with IPv6 address.*
 
 f.	Test connectivity by pinging R2’s e0/1 interface IP address.
