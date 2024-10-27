@@ -514,6 +514,9 @@ e.	Issue the command **show ip dhcp server statistics** to examine DHCP messages
 
 f.	Test connectivity by pinging R1’s e0/1.100 interface IP address.
 
+![alt text](image-24.png)
+
+
 ## Part 3: Configure and verify a DHCP Relay on R2
 In Part 3, you will configure R2 to relay DHCP requests from the local area network on interface e0/1 to the DHCP server (R1). 
 
