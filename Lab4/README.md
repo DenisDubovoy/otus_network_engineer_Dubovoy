@@ -134,3 +134,214 @@
 | VLAN 20           | `10.1.2.254`   | Конечные устройства        | Виртуальный шлюз для конечных устройств в отказоустойчивой сети. |
 
 
+Настройка локальной сети для R12 и R13.
+
+R12:
+```
+Router>en
+Router#configure t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#hos
+Router(config)#hostname R12
+Router(config)#no ip domain-lookup
+R12(config)#interface e0/0
+R12(config-if)#no shut
+R12(config-if)#exit
+R12(config)#interface e0/0.10
+R12(config-subif)#encapsulation dot1Q 10
+R12(config-subif)#ip address 10.1.1.1 255.255.255.0
+R12(config-subif)#description LAN_MANAGEMENT
+R12(config-subif)#interface e0/0.20
+R12(config-subif)#encapsulation dot1Q 20
+R12(config-subif)#description LAN_SEGMENT
+R12(config-subif)#ip address 10.1.2.1 255.255.255.0
+R12(config)#interface e0/0.99
+R12(config-subif)#encapsulation dot1Q 99 native
+R12(config-subif)#description NATIVE
+R12(config-subif)#interface e0/2
+R12(config-if)#ip address 10.1.3.1 255.255.255.252
+R12(config-if)#description TO_R14
+R12(config-if)#no shut
+R12(config-if)#interface e0/3
+R12(config-if)#ip address 10.1.3.5 255.255.255.252
+R12(config-if)#description TO_R15
+R12(config-if)#no shut
+R12(config-if)#interface l0
+R12(config-if)#ip address 10.1.255.1 255.255.255.255
+Настройка VRRP
+R12(config-if)#interface e0/0.10
+R12(config-subif)#vrrp 10 ip 10.1.1.254
+R12(config-subif)#vrrp 10 priority 110
+R12(config-subif)#vrrp 10 preempt
+R12(config-subif)#vrrp 10 authentication md5 key-string PASSWORD_MANAGEMENT
+R12(config-subif)#interface e0/0.20
+R12(config-subif)#vrrp 20 ip 10.1.2.254
+R12(config-subif)# vrrp 20 priority 110
+R12(config-subif)#vrrp 20 preempt
+R12(config-subif)#vrrp 20 authentication md5 key-string PASSWORD_LAN
+R12(config-subif)#do wr
+Building configuration...
+[OK]
+```
+
+Настройка R13:
+```
+en
+conf t
+hostname R13
+no ip domain-lookup
+interface e0/0
+no shut
+exit
+interface e0/0.10
+encapsulation dot1Q 10
+ip address 10.1.1.2  255.255.255.0
+description LAN_MANAGEMENT
+interface e0/0.20
+encapsulation dot1Q 20
+description LAN_SEGMENT
+ip address 10.1.2.2 255.255.255.0
+interface e0/0.99
+encapsulation dot1Q 99 native
+description NATIVE
+interface e0/2
+ip address 10.1.3.9 255.255.255.252
+description TO_R14
+no shut
+interface e0/3
+ip address 10.1.3.13 255.255.255.252
+description TO_R15
+no shut
+interface l0
+ip address 10.1.255.2 255.255.255.255
+Настройка VRRP
+interface e0/0.10
+vrrp 10 ip 10.1.1.254
+vrrp 10 priority 100
+vrrp 10 authentication md5 key-string PASSWORD_MANAGEMENT
+interface e0/0.20
+vrrp 20 ip 10.1.2.254
+vrrp 20 priority 100
+vrrp 20 authentication md5 key-string PASSWORD_LAN
+do wr
+```
+
+Настройка SW4:
+```
+en
+conf t
+hostname SW4
+no ip domain-lookup
+spanning-tree mode rapid-pvst
+spanning-tree vlan 10,20,99 root primary
+interface range e1/2-3
+shut
+vlan 20
+name USERS
+vlan 10
+name MANAGEMENT
+vlan 99
+name NATIVE
+interface range e0/2-3
+channel-group 1 mode active
+interface range e1/0-1,e0/0-3,po1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk native vlan 99
+switchport trunk allowed vlan 10,20,99
+interface vlan 10
+ip address 10.1.1.5 255.255.255.0
+no shut
+exit
+ip route 0.0.0.0 0.0.0.0 10.1.1.254
+```
+
+SW5:
+```
+en
+conf t
+hostname SW5
+no ip domain-lookup
+spanning-tree mode rapid-pvst
+interface range e1/2-3
+shut
+vlan 20
+name USERS
+vlan 10
+name MANAGEMENT
+vlan 99
+name NATIVE
+interface range e0/2-3
+channel-group 1 mode active
+interface range e1/0-1,e0/0-3,po1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk native vlan 99
+switchport trunk allowed vlan 10,20,99
+interface vlan 10
+ip address 10.1.1.6 255.255.255.0
+no shut
+exit
+ip route 0.0.0.0 0.0.0.0 10.1.1.254
+```
+
+SW3:
+```
+en
+conf t
+hostname SW3
+no ip domain-lookup
+spanning-tree mode rapid-pvst
+interface e0/3
+shut
+interface range e1/0-3
+shut
+vlan 20
+name USERS
+vlan 10
+name MANAGEMENT
+vlan 99
+name NATIVE
+interface e0/2
+switchport mode access
+switchport access vlan 20
+interface range e0/0-1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk native vlan 99
+switchport trunk allowed vlan 10,20,99
+interface vlan 10
+ip address 10.1.1.4 255.255.255.0
+no shut
+exit
+```
+SW2:
+```
+en
+conf t
+hostname SW2
+no ip domain-lookup
+spanning-tree mode rapid-pvst
+interface e0/3
+shut
+interface range e1/0-3
+shut
+vlan 20
+name USERS
+vlan 10
+name MANAGEMENT
+vlan 99
+name NATIVE
+interface e0/2
+switchport mode access
+switchport access vlan 20
+interface range e0/0-1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk native vlan 99
+switchport trunk allowed vlan 10,20,99
+interface vlan 10
+ip address 10.1.1.3 255.255.255.0
+no shut
+exit
+```
