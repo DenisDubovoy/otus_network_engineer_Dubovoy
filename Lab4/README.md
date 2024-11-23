@@ -170,8 +170,6 @@ R12:
 ```
 Router>en
 Router#configure t
-Enter configuration commands, one per line.  End with CNTL/Z.
-Router(config)#hos
 Router(config)#hostname R12
 Router(config)#no ip domain-lookup
 R12(config)#interface e0/0
@@ -180,38 +178,50 @@ R12(config-if)#exit
 R12(config)#interface e0/0.10
 R12(config-subif)#encapsulation dot1Q 10
 R12(config-subif)#ip address 10.1.1.1 255.255.255.0
-R12(config-subif)#description LAN_MANAGEMENT
+R12(config-subif)#description VLAN10_MANAGEMENT
 R12(config-subif)#interface e0/0.20
 R12(config-subif)#encapsulation dot1Q 20
-R12(config-subif)#description LAN_SEGMENT
+R12(config-subif)#description VLAN20_SEGMENT
 R12(config-subif)#ip address 10.1.2.1 255.255.255.0
+R12(config-subif)#interface e0/0.30
+R12(config-subif)#encapsulation dot1Q 30
+R12(config-subif)#description VLAN30_SEGMENT
+R12(config-subif)#ip address 10.1.3.1 255.255.255.0
 R12(config)#interface e0/0.99
 R12(config-subif)#encapsulation dot1Q 99 native
 R12(config-subif)#description NATIVE
 R12(config-subif)#interface e0/2
-R12(config-if)#ip address 10.1.3.1 255.255.255.252
+R12(config-if)#ip address 10.1.4.1 255.255.255.252
 R12(config-if)#description TO_R14
 R12(config-if)#no shut
 R12(config-if)#interface e0/3
-R12(config-if)#ip address 10.1.3.5 255.255.255.252
+R12(config-if)#ip address 10.1.4.5 255.255.255.252
 R12(config-if)#description TO_R15
 R12(config-if)#no shut
 R12(config-if)#interface l0
 R12(config-if)#ip address 10.1.255.1 255.255.255.255
+```
+```
 Настройка VRRP
 R12(config-if)#interface e0/0.10
 R12(config-subif)#vrrp 10 ip 10.1.1.254
 R12(config-subif)#vrrp 10 priority 110
 R12(config-subif)#vrrp 10 preempt
-R12(config-subif)#vrrp 10 authentication md5 key-string PASSWORD_MANAGEMENT
+R12(config-subif)#vrrp 10 authentication md5 key-string PASSWORD_VLAN10_MANAGEMENT
 R12(config-subif)#interface e0/0.20
 R12(config-subif)#vrrp 20 ip 10.1.2.254
 R12(config-subif)# vrrp 20 priority 110
 R12(config-subif)#vrrp 20 preempt
-R12(config-subif)#vrrp 20 authentication md5 key-string PASSWORD_LAN
+R12(config-subif)#vrrp 20 authentication md5 key-string PASSWORD_VLAN20
+R12(config-subif)#interface e0/0.30
+R12(config-subif)#vrrp 30 ip 10.1.3.254
+R12(config-subif)# vrrp 30 priority 110
+R12(config-subif)#vrrp 30 preempt
+R12(config-subif)#vrrp 30 authentication md5 key-string PASSWORD_VLAN30
 R12(config-subif)#do wr
 Building configuration...
 [OK]
+
 ```
 
 Настройка R13:
@@ -226,34 +236,45 @@ exit
 interface e0/0.10
 encapsulation dot1Q 10
 ip address 10.1.1.2  255.255.255.0
-description LAN_MANAGEMENT
+description LAN10_MANAGEMENT
 interface e0/0.20
 encapsulation dot1Q 20
-description LAN_SEGMENT
+description LAN20_SEGMENT
 ip address 10.1.2.2 255.255.255.0
+interface e0/0.30
+encapsulation dot1Q 30
+description LAN30_SEGMENT
+ip address 10.1.3.2 255.255.255.0
 interface e0/0.99
 encapsulation dot1Q 99 native
 description NATIVE
 interface e0/2
-ip address 10.1.3.9 255.255.255.252
+ip address 10.1.4.9 255.255.255.252
 description TO_R14
 no shut
 interface e0/3
-ip address 10.1.3.13 255.255.255.252
+ip address 10.1.4.13 255.255.255.252
 description TO_R15
 no shut
 interface l0
 ip address 10.1.255.2 255.255.255.255
+```
+```
 Настройка VRRP
 interface e0/0.10
 vrrp 10 ip 10.1.1.254
 vrrp 10 priority 100
-vrrp 10 authentication md5 key-string PASSWORD_MANAGEMENT
+vrrp 10 authentication md5 key-string PASSWORD_VLAN10_MANAGEMENT
 interface e0/0.20
 vrrp 20 ip 10.1.2.254
 vrrp 20 priority 100
-vrrp 20 authentication md5 key-string PASSWORD_LAN
+vrrp 20 authentication md5 key-string PASSWORD_VLAN20
+interface e0/0.30
+vrrp 30 ip 10.1.3.254
+vrrp 30 priority 100
+vrrp 30 authentication md5 key-string PASSWORD_VLAN30
 do wr
+
 ```
 
 Настройка SW4:
@@ -263,11 +284,13 @@ conf t
 hostname SW4
 no ip domain-lookup
 spanning-tree mode rapid-pvst
-spanning-tree vlan 10,20,99 root primary
+spanning-tree vlan 10,20,30,99 root primary
 interface range e1/2-3
 shut
 vlan 20
-name USERS
+name VPC1
+vlan 30
+name VPC7
 vlan 10
 name MANAGEMENT
 vlan 99
@@ -278,12 +301,14 @@ interface range e1/0-1,e0/0-3,po1
 switchport trunk encapsulation dot1q
 switchport mode trunk
 switchport trunk native vlan 99
-switchport trunk allowed vlan 10,20,99
+switchport trunk allowed vlan 10,20,30,99
+switchport nonegotiate
 interface vlan 10
 ip address 10.1.1.5 255.255.255.0
 no shut
 exit
 ip route 0.0.0.0 0.0.0.0 10.1.1.254
+
 ```
 
 SW5:
@@ -293,10 +318,13 @@ conf t
 hostname SW5
 no ip domain-lookup
 spanning-tree mode rapid-pvst
+spanning-tree vlan 10,20,30,99 root secondary
 interface range e1/2-3
 shut
 vlan 20
-name USERS
+name VPC1
+vlan 30
+name VPC7
 vlan 10
 name MANAGEMENT
 vlan 99
@@ -307,12 +335,14 @@ interface range e1/0-1,e0/0-3,po1
 switchport trunk encapsulation dot1q
 switchport mode trunk
 switchport trunk native vlan 99
-switchport trunk allowed vlan 10,20,99
+switchport trunk allowed vlan 10,20,30,99
+switchport nonegotiate
 interface vlan 10
 ip address 10.1.1.6 255.255.255.0
 no shut
 exit
 ip route 0.0.0.0 0.0.0.0 10.1.1.254
+do wr
 ```
 
 SW3:
@@ -322,12 +352,17 @@ conf t
 hostname SW3
 no ip domain-lookup
 spanning-tree mode rapid-pvst
+interface e0/2 
+spanning-tree portfast
+spanning-tree bpduguard enable
 interface e0/3
 shut
 interface range e1/0-3
 shut
 vlan 20
-name USERS
+name VPC1
+vlan 30
+name VPC7
 vlan 10
 name MANAGEMENT
 vlan 99
@@ -339,7 +374,8 @@ interface range e0/0-1
 switchport trunk encapsulation dot1q
 switchport mode trunk
 switchport trunk native vlan 99
-switchport trunk allowed vlan 10,20,99
+switchport trunk allowed vlan 10,20,30,99
+switchport nonegotiate
 interface vlan 10
 ip address 10.1.1.4 255.255.255.0
 no shut
@@ -352,24 +388,30 @@ conf t
 hostname SW2
 no ip domain-lookup
 spanning-tree mode rapid-pvst
+interface e0/2 
+spanning-tree portfast
+spanning-tree bpduguard enable
 interface e0/3
 shut
 interface range e1/0-3
 shut
 vlan 20
-name USERS
+name VPC1
+vlan 30
+name VPC7
 vlan 10
 name MANAGEMENT
 vlan 99
 name NATIVE
 interface e0/2
 switchport mode access
-switchport access vlan 20
+switchport access vlan 30
 interface range e0/0-1
 switchport trunk encapsulation dot1q
 switchport mode trunk
 switchport trunk native vlan 99
-switchport trunk allowed vlan 10,20,99
+switchport trunk allowed vlan 10,20,30,99
+switchport nonegotiate
 interface vlan 10
 ip address 10.1.1.3 255.255.255.0
 no shut
@@ -443,3 +485,69 @@ exit
 
 3. **Суммирование маршрутов**:
    - Внутренние маршруты AS 301 могут быть суммированы в один префикс: `10.3.0.0/16`.
+
+# IP Адресация для AS 2042 (Санкт-Петербург)
+
+## Подсети
+
+| **Подсеть**      | **Маска**         | **Назначение**                                | **Пояснение**                                                                 |
+|-------------------|-------------------|-----------------------------------------------|-------------------------------------------------------------------------------|
+| `172.16.1.0/24`  | `255.255.255.0`   | VLAN 10 — Управление                         | Для управления маршрутизаторами и коммутаторами.                             |
+| `172.16.2.0/24`  | `255.255.255.0`   | VLAN 20 — Сеть VPC8                          | Подсеть для конечного устройства VPC8.                                       |
+| `172.16.3.0/24`  | `255.255.255.0`   | VLAN 30 — Сеть VPC2                          | Подсеть для конечного устройства VPC2.                                       |
+| `172.16.4.0/30`  | `255.255.255.252` | Соединение между R16 и R18                   | Точечное соединение между маршрутизаторами.                                  |
+| `172.16.4.4/30`  | `255.255.255.252` | Соединение между R16 и R32                   | Аналогично другим соединениям.                                               |
+| `172.16.4.8/30`  | `255.255.255.252` | Соединение между R17 и R18                   | Подсеть для прямого соединения R17 ↔ R18.                                    |
+| `172.16.255.0/24`| `255.255.255.0`   | Loopback-интерфейсы маршрутизаторов          | Стабильные IP для OSPF Router ID и BGP update-source.                        |
+| `198.19.5.0/30`  | `255.255.255.252` | Соединение между R18 и AS 520 (R24)          | Зарезервированный диапазон для тестирования.                                 |
+| `198.19.6.0/30`  | `255.255.255.252` | Соединение между R18 и AS 520 (R26)          | Аналогично для связи с AS 520.                                               |
+
+## Таблица IP-адресов
+
+| **Устройство** | **Интерфейс** | **IP-адрес**   | **Маска**       | **Назначение**                                |
+|----------------|---------------|----------------|-----------------|----------------------------------------------|
+| **R16**        | e0/0.10       | 172.16.1.1     | 255.255.255.0   | VLAN 10 — Управление (VRRP Master)           |
+|                | e0/0.20       | 172.16.2.1     | 255.255.255.0   | VLAN 20 — Сеть VPC8 (VRRP Master)            |
+|                | e0/0.30       | 172.16.3.1     | 255.255.255.0   | VLAN 30 — Сеть VPC2 (VRRP Master)            |
+|                | e0/0.99       | -              | -               | Native VLAN                                   |
+|                | e0/1          | 172.16.4.1     | 255.255.255.252 | Соединение с R18                             |
+|                | e0/3          | 172.16.4.5     | 255.255.255.252 | Соединение с R32                             |
+|                | Loopback0     | 172.16.255.1   | 255.255.255.255 | Loopback для управления и маршрутизации      |
+| **R17**        | e0/0.10       | 172.16.1.2     | 255.255.255.0   | VLAN 10 — Управление (VRRP Backup)           |
+|                | e0/0.20       | 172.16.2.2     | 255.255.255.0   | VLAN 20 — Сеть VPC8 (VRRP Backup)            |
+|                | e0/0.30       | 172.16.3.2     | 255.255.255.0   | VLAN 30 — Сеть VPC2 (VRRP Backup)            |
+|                | e0/0.99       | -              | -               | Native VLAN                                   |
+|                | e0/1          | 172.16.4.9     | 255.255.255.252 | Соединение с R18                             |
+|                | Loopback0     | 172.16.255.2   | 255.255.255.255 | Loopback для управления и маршрутизации      |
+| **R18**        | e0/0          | 172.16.4.2     | 255.255.255.252 | Соединение с R16                             |
+|                | e0/1          | 172.16.4.10    | 255.255.255.252 | Соединение с R17                             |
+|                | e0/2          | 198.19.5.1     | 255.255.255.252 | Соединение с AS 520 (R24)                    |
+|                | e0/3          | 198.19.6.1     | 255.255.255.252 | Соединение с AS 520 (R26)                    |
+|                | Loopback0     | 172.16.255.3   | 255.255.255.255 | Loopback для управления и маршрутизации      |
+| **R32**        | e0/0          | 172.16.4.6     | 255.255.255.252 | Соединение с R16                             |
+|                | Loopback0     | 172.16.255.4   | 255.255.255.255 | Loopback для управления и маршрутизации      |
+| **SW9**        | VLAN 10       | 172.16.1.3     | 255.255.255.0   | Управляемый IP для SW9                       |
+| **SW10**       | VLAN 10       | 172.16.1.4     | 255.255.255.0   | Управляемый IP для SW10                      |
+| **VPC2**       | eth0          | 172.16.3.100   | 255.255.255.0   | Конечное устройство в VLAN 30                |
+| **VPC8**       | eth0          | 172.16.2.100   | 255.255.255.0   | Конечное устройство в VLAN 20                |
+
+## Пояснения
+
+1. **VLAN 10 (Управление):**
+   - Используется для управления маршрутизаторами и коммутаторами.
+   - Для отказоустойчивости настроен VRRP между R16 и R17.
+
+2. **VLAN 20 (VPC8):**
+   - Сеть конечного устройства VPC8 с VRRP для отказоустойчивости.
+
+3. **VLAN 30 (VPC2):**
+   - Сеть конечного устройства VPC2 с VRRP для отказоустойчивости.
+
+4. **Подсети `/30`:**
+   - Используются для точечных соединений между маршрутизаторами.
+
+5. **Loopback-интерфейсы:**
+   - Обеспечивают стабильные IP-адреса для маршрутизации и управления.
+
+6. **Меж-AS соединения:**
+   - Используют диапазон `198.19.x.x`, чтобы эмулировать связь между автономными системами.
