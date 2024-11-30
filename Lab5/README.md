@@ -72,6 +72,17 @@ Building configuration...
 [OK]
 ```
 
+Статический маршрут на R27 (Лабытнанги) к R25:
+
+```
+R27#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+R27(config)#ip route 0.0.0.0 0.0.0.0 192.168.1.2
+R27(config)#do wr
+Building configuration...
+[OK]
+```
+
 
 
 
