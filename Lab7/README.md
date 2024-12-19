@@ -57,6 +57,7 @@ R26(config-if-range)#ip router isis
 
 Проверка: 
 ![alt text](image-1.png)
+
 R23 e0/2 - пингуется.
 
 ![alt text](image-2.png)
