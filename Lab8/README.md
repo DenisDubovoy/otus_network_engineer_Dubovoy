@@ -18,8 +18,8 @@
 
  ## Выполнение
 
-```
 Произвёдём минимальную настройку на R18 согласно заданию.
+```
 R18(config)#router eigrp LAB
 R18(config-router)#no shutdown
 R18(config-router)#address-family ipv4 unicast autonomous-system 1
