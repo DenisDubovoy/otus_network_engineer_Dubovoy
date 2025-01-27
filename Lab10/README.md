@@ -102,6 +102,23 @@ router bgp 520
 ```
 
 ```
+R25#show run | sec bgp
+router bgp 520
+ bgp log-neighbor-changes
+ neighbor 10.52.255.23 remote-as 520
+ neighbor 10.52.255.23 update-source Loopback0
+ neighbor 10.52.255.26 remote-as 520
+ neighbor 10.52.255.26 update-source Loopback0
+ !
+ address-family ipv4
+  neighbor 10.52.255.23 activate
+  neighbor 10.52.255.26 activate
+ exit-address-family
+R25#
+
+```
+
+```
 R26#show run | sec bgp
 router bgp 520
  bgp log-neighbor-changes
