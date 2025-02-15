@@ -59,6 +59,7 @@ R18(config-route-map)#match ip address prefix-list OUT
 R18(config-route-map)#exit
 ```
 
+
 Применим route-map к соседям:
 
 ```
@@ -67,6 +68,10 @@ R18(config-router)#address-family ipv4
 R18(config-router-af)#neighbor 198.19.5.1 route-map 2 out
 R18(config-router-af)#neighbor 198.19.6.1 route-map 2 out
 ```
+
+Проверим, что нет транзитного трафика:
+
+![alt text](image-3.png)
 
  3. Настроим провайдера Киторн так, чтобы в офис Москва отдавался только маршрут по умолчанию:
 
@@ -111,4 +116,3 @@ R15(config-router-af)#neighbor 198.18.0.6 prefix-list DEFAULTandPITER in
 ```
 
 ![alt text](image-2.png)
-
