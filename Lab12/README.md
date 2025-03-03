@@ -103,12 +103,11 @@ interface Ethernet0/3
 
 5. *. Настроите статический NAT(PAT) для офиса Чокурдах.
 
-
+```
 R28>en
 R28#conf t
 Enter configuration commands, one per line.  End with CNTL/Z.
 R28(config)#ip nat pool NAT-POOL1 192.168.2.1 192.168.2.1 prefix-length 30
-R28(config)#
 *Mar  2 15:30:22.293: %LINEPROTO-5-UPDOWN: Line protocol on Interface NVI0, changed state to up
 R28(config)#access-list 100 permit ip 192.168.0.0 0.0.31.255 any
 R28(config)#ip nat inside source list 100 pool NAT-POOL1 overload
@@ -119,7 +118,8 @@ R28(config-if)# ip nat outside
 R28(config-if)#interface Ethernet0/0
 R28(config-if)#interface Ethernet0/2
 R28(config-if)# ip nat inside
-
+```
+При настройке периодически отваливается Track1
 ![alt text](image-12.png)
 
 
