@@ -309,5 +309,87 @@ R28#
 Видим, что пакеты идут напрямую со второй траcсировки.
 Вторая фаза DMVPN настроена.
 
+Настроим 3 фазу: 
+
+Настроим маршрутизацию используя EIGRP:
+```
+R14(config)#conf t
+R14(config)#router eigrp DMVPN
+R14(config-router)#address-family ipv4 unicast autonomous-system 1
+R14(config-router-af)#network 10.200.0.0 0.0.0.255
+R14(config-router-af)#topology base
+R14(config-router-af-topology)#redistribute ospf 1
+R14(config-router-af-topology)#end
+R14#conf t
+R14(config)#router ospf 1
+R14(config-router)#redistribute eigrp 1 metric 111 subnets
+R14(config-router)#end
+```
+
+```
+R27#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+R27(config)#router eigrp DMVPN
+R27(config-router)#address-family ipv4 unicast autonomous-system 1
+R27(config-router-af)#network 10.200.0.0 0.0.0.255
+R27(config-router-af)#
+*Mar 12 00:14:18.826: %DUAL-5-NBRCHANGE: EIGRP-IPv4 1: Neighbor 10.200.0.14 (Tunnel100) is up: new adjacency
+R27(config-router-af)#
+```
+
+```
+R28#conf t
+R28(config)#router eigrp DMVPN
+R28(config-router)#address-family ipv4 unicast autonomous-system 1
+R28(config-router-af)#network 10.200.0.0 0.0.0.255
+*Mar 12 00:04:47.154: %DUAL-5-NBRCHANGE: EIGRP-IPv4 1: Neighbor 10.200.0.14 (Tunnel100) is up: new adjacency
+```
+Проанонсируем внутренние сетки на R28:
+
+```
+R28(config-router-af)#network 192.168.10.0 0.0.0.255
+R28(config-router-af)#network 192.168.20.0 0.0.0.255
+R28(config-router-af)#network 192.168.30.0 0.0.0.255
+R28(config-router-af)#end
+```
+
+Настроим 3 фазу:
+
+На R14 (Hub):
+```
+R14#conf t
+R14(config)#interface tunnel 100
+R14(config-if)#ip nhrp redirect
+Mar 12 00:25:31.536: %DUAL-5-NBRCHANGE: EIGRP-IPv4 1: Neighbor 10.200.0.28 (Tunnel100) is down: Interface PEER-TERMINATION received
+Mar 12 00:25:31.543: %DUAL-5-NBRCHANGE: EIGRP-IPv4 1: Neighbor 10.200.0.27 (Tunnel100) is down: Interface PEER-TERMINATION received
+R14(config-if)#
+Mar 12 00:25:36.408: %DUAL-5-NBRCHANGE: EIGRP-IPv4 1: Neighbor 10.200.0.28 (Tunnel100) is up: new adjacency
+Mar 12 00:25:36.471: %DUAL-5-NBRCHANGE: EIGRP-IPv4 1: Neighbor 10.200.0.27 (Tunnel100) is up: new adjacency
+R14(config-if)#
+R14(config-if)#ip summary-address eigrp 1 0.0.0.0/0
+
+```
+
+```
+R28(config)#interface tunnel 100
+R28(config-if)#ip nhrp shortcut
+```
+На R27 аналогично R28.
+
+```
+R14(config)#router eigrp DMVPN
+R14(config-router)#address-family ipv4 unicast autonomous-system 1
+R14(config-router-af-interface)#summary-address 0.0.0.0/0
+R14(config-router-af-interface)#
+Mar 12 01:11:47.491: %DUAL-5-NBRCHANGE: EIGRP-IPv4 1: Neighbor 10.200.0.27 (Tunnel100) is resync: summary configured
+Mar 12 01:11:47.491: %DUAL-5-NBRCHANGE: EIGRP-IPv4 1: Neighbor 10.200.0.28 (Tunnel100) is resync: summary configured
+```
+Видим, что мы получили все маршруты EIGRP и суммарный маршрут по DMVPN.
+
+![alt text](image-6.png)
+
+Фаза № 3 DMVPN полностью настроена.
+
+
 
 
