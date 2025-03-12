@@ -390,6 +390,87 @@ Mar 12 01:11:47.491: %DUAL-5-NBRCHANGE: EIGRP-IPv4 1: Neighbor 10.200.0.28 (Tunn
 
 Фаза № 3 DMVPN полностью настроена.
 
+Настроим полную связность через GRE между Москвой и C.-Петербург:
+
+Для этого настроим OSPF через tunnel 100 GRE:
+```
+R15#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+R15(config)#router ospf 1
+R15(config-router)#network 10.100.0.0 255.255.255.0 area 0
+R15(config-router)#
+*Mar 12 03:33:12.127: %OSPF-5-ADJCHG: Process 1, Nbr 198.19.6.2 on Tunnel100 from LOADING to FULL, Loading Done
+R15(config-router)#do show ip ospf nei
+Neighbor ID     Pri   State           Dead Time   Address         Interface
+198.19.6.2        0   FULL/  -        00:00:39    10.100.0.18     Tunnel100
+10.1.255.13       1   FULL/DR         00:00:37    10.1.4.13       Ethernet0/0
+10.1.255.12       1   FULL/DR         00:00:38    10.1.4.5        Ethernet0/1
+10.1.255.20       1   FULL/DR         00:00:34    10.1.4.22       Ethernet0/3
+R15(config-router)#
+```
+```
+R18#show run interface t100
+Building configuration...
+
+Current configuration : 159 bytes
+!
+interface Tunnel100
+ ip address 10.100.0.18 255.255.255.0
+ ip mtu 1400
+ ip tcp adjust-mss 1360
+ tunnel source 198.19.5.2
+ tunnel destination 198.18.0.5
+end
 
 
+R18#show ip ospf neighbor
 
+Neighbor ID     Pri   State           Dead Time   Address         Interface
+10.1.255.15       0   FULL/  -        00:00:34    10.100.0.15     Tunnel100
+R18#conf t
+R18(config)#router ospf 1
+R18(config-router)#redistribute eigrp 1 metric 10 subnets
+R18(config-router)#end
+R18#conf t
+R18(config)#router eigrp LAB
+R18(config-router)#do show run | sec eigrp
+router eigrp LAB
+ !
+ address-family ipv4 unicast autonomous-system 1
+  !
+  topology base
+   redistribute bgp 2042 metric 10000 100 255 1 1500
+  exit-af-topology
+  network 10.100.0.0 0.0.0.255
+  network 172.16.4.0 0.0.0.3
+  network 172.16.4.8 0.0.0.3
+ exit-address-family
+ redistribute eigrp 1 metric 10 subnets
+  redistribute eigrp 1
+R18(config-router)#address-family ipv4 unicast autonomous-system 1
+R18(config-router-af)#topology base
+R18#show ip route 10.1.2.3
+Routing entry for 10.1.2.0/24
+  Known via "ospf 1", distance 110, metric 1020, type inter area
+  Redistributing via eigrp 1
+  Advertised by eigrp 1 metric 10000 100 255 1 1500
+  Last update from 10.100.0.15 on Tunnel100, 00:16:12 ago
+  Routing Descriptor Blocks:
+  * 10.100.0.15, from 10.1.255.13, 00:16:12 ago, via Tunnel100
+      Route metric is 1020, traffic share count is 1
+
+```
+
+Изменим списки доспупа, чтобы не мешало NAT:
+```
+R14#show run | sec access-l
+ip as-path access-list 1 permit ^$
+access-list 1 permit 10.1.0.0 0.0.255.255
+access-list 101 deny   gre any any
+access-list 101 permit ip 10.1.0.0 0.0.255.255 any
+```
+
+
+![alt text](image-7.png)
+
+IP связность всех сетей полностью настроена.
