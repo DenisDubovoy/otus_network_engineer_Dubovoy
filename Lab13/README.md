@@ -449,6 +449,10 @@ router eigrp LAB
   redistribute eigrp 1
 R18(config-router)#address-family ipv4 unicast autonomous-system 1
 R18(config-router-af)#topology base
+```
+Заредистрибьютим OSPF в EIGRP и обратно на R18. 
+В результате получим нужные маршруты и полуную IP свзяность через GRE туннель.
+```
 R18#show ip route 10.1.2.3
 Routing entry for 10.1.2.0/24
   Known via "ospf 1", distance 110, metric 1020, type inter area
