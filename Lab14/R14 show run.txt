@@ -1,0 +1,283 @@
+
+R14#show run
+Building configuration...
+
+Current configuration : 7464 bytes
+!
+! No configuration change since last restart
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R14
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip domain name moscow.ru
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+crypto pki trustpoint R14
+ enrollment url http://10.1.255.12:80
+ serial-number
+ revocation-check crl
+!
+!
+crypto pki certificate chain R14
+ certificate 02
+  30820307 308201EF A0030201 02020102 300D0609 2A864886 F70D0101 05050030
+  0E310C30 0A060355 04031303 52313230 1E170D32 35303332 34303631 3435365A
+  170D3236 30333234 30363134 35365A30 2F312D30 0F060355 04051308 36373130
+  39303838 301A0609 2A864886 F70D0109 02160D52 31342E6D 6F73636F 772E7275
+  30820122 300D0609 2A864886 F70D0101 01050003 82010F00 3082010A 02820101
+  00A3C7F0 B596FBB7 29D2E6B3 163BD216 07707E48 842F91E3 119B0B13 19389F7E
+  C28DDC17 6B92EED2 4343AC35 59F355E7 E0AD54A1 8ACEEA7D 533FED5E 934D7C2C
+  5CBD89CC 7BFAC1D7 9A6B9AC4 447F3DC0 3D80BF10 25BC95B3 3B8A1FBE CBC09CDF
+  8C642C67 90F423F9 D585B90B 4D988426 6360E4AA 5F2F4035 45A5846F 5EFA10C9
+  0F202AAE 3C33180D DBD0559D 5AB999B7 7C3CDD22 DAEBB282 80F65E10 A5670460
+  93BAB36F D679E187 155FF74F 2A59EDED F81B0BD3 2E4F244C 920A76C7 D72CE9EC
+  31B8BE32 23468C33 4EC447D8 3008E4DC 457549A3 3580EE62 B0FF3A07 6F81EB6F
+  57533258 DB8CFB29 25D95F9D 0AB83198 1A9C4944 EE2FDD8A E6B8D7AF 069D6B3A
+  0F020301 0001A34F 304D300B 0603551D 0F040403 0205A030 1F060355 1D230418
+  30168014 8882EAD7 6229AFBD 5C45A27E AAA1FE1E 288A89F0 301D0603 551D0E04
+  160414B4 9E0E21DD 342BCE85 EE395700 E77BC323 36A4F830 0D06092A 864886F7
+  0D010105 05000382 01010035 0B02CCE1 72128844 67876FAC 98C97D05 C8BB6CFB
+  B1C022A4 69334156 2AC05FB8 53943796 8F1A61D7 EA4013A8 670A01A2 547BA42F
+  44442654 2430B1CD D50FF6A4 02FAF434 973927F0 B2BA71BA 57ADF24D B571502A
+  582D1C19 B322238D 975E48CB 64988486 D7EFF148 279FDA31 F3A11CE6 252BC175
+  8F662B76 8C79B4D7 C4567B10 ACE67BF5 D310D2C9 5772DCB8 5BE9C67A CC88F0EA
+  176026AB 9B4F8F24 191BC775 0170E5D7 A263538C F32D82E2 0CA78E9E 8C444CCC
+  9C31C0F1 6FC7A2BD 23562AE6 3CD5775E 2DD232F8 27152460 F27D7499 45DF7DE8
+  13C72485 B8F7F224 1EBB2CC0 43E26044 1C452EB7 AA2FFD63 82C23190 6796481A
+  59135C88 4707BEF8 7DEC26
+        quit
+ certificate ca 01
+  308202FA 308201E2 A0030201 02020101 300D0609 2A864886 F70D0101 04050030
+  0E310C30 0A060355 04031303 52313230 1E170D32 35303332 34303535 3232315A
+  170D3238 30333233 30353532 32315A30 0E310C30 0A060355 04031303 52313230
+  82012230 0D06092A 864886F7 0D010101 05000382 010F0030 82010A02 82010100
+  A8CA8131 82BE91A5 92284DDF D0A97272 3B0185B3 5130A115 41131C59 3A12D894
+  CE93183E DC308BFC 5AA94168 DBD862DD CB8B783E AE4A64A1 45A3A3F5 C8B9B776
+  2DAF4FC8 AB503906 9B185737 FF3E250B 26C7A912 AC0CC8FE 1F9B68BA 7137D1A5
+  2B11848D D5828650 51500B58 274A23A9 FE669814 2455DA04 1DA9D61E 642C5334
+  EF106C82 B2CAD003 4A922032 703BD0BF 0CB12F1B CA8ABDA7 B5999A55 B2C7EECC
+  22D5A993 19368DB1 E03CD646 44788E5A 23EB2A18 68FF6669 44FBFB97 91991FFE
+  B5AD4FB1 C8B95CD4 EC3A41DD 90727A65 D9D50370 38658188 A901E041 040CCC7E
+  380BE1B1 4F7B539E 955BE073 C373CE42 78E6859D 4423E8B1 EA2A7E7C 3DDF76B1
+  02030100 01A36330 61300F06 03551D13 0101FF04 05300301 01FF300E 0603551D
+  0F0101FF 04040302 0186301F 0603551D 23041830 16801488 82EAD762 29AFBD5C
+  45A27EAA A1FE1E28 8A89F030 1D060355 1D0E0416 04148882 EAD76229 AFBD5C45
+  A27EAAA1 FE1E288A 89F0300D 06092A86 4886F70D 01010405 00038201 010023E4
+  E49B9341 17D5A43E 248EC3CF BC02BAB0 ECADD5AD B957613D BD5E255D 60395BE6
+  3F2460B3 D7E7273D 51007BE6 789D5822 BC80D7B7 D1DF0E2A BB9A6606 4957B164
+  AD1D36FD 41E42F85 A43E3BCD 8BD15819 375AD5A0 166575DC 436ADA6B A802A737
+  4EE1C6A0 54577105 7769B11E C73D4E5C 895A7C88 FBB53A7A 5012849A 1BF51674
+  B00E57D1 9E617C77 AA43CD6A 009E65C0 A2A213AF EA667F55 489D2E31 A0574CEB
+  FA5728EF 4ADD1C6D 7D16F01D 00D1E1C6 83B7FF11 20A866FA 06FB4F28 E7C08942
+  E8B2503D 17811FF4 172F9A59 A8A834DE 8D5BAD21 6CC2A6F6 7CBAC211 DF9ECFB2
+  6B0591E4 834DF55E F7D9F997 C6873799 12B55E77 B4C00CDC 85199163 D2EB
+        quit
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+crypto isakmp policy 10
+ encr aes
+ hash sha256
+ group 5
+!
+!
+crypto ipsec transform-set VTI esp-aes esp-sha-hmac
+ mode transport
+!
+crypto ipsec profile DMVPN
+ set transform-set VTI
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 10.1.255.14 255.255.255.255
+!
+interface Tunnel100
+ ip address 10.200.0.14 255.255.255.0
+ no ip redirects
+ ip mtu 1400
+ ip nhrp map multicast dynamic
+ ip nhrp network-id 100
+ ip nhrp redirect
+ ip summary-address eigrp 1 0.0.0.0 0.0.0.0
+ ip tcp adjust-mss 1360
+ tunnel source 198.18.0.1
+ tunnel mode gre multipoint
+ tunnel protection ipsec profile DMVPN
+!
+interface Ethernet0/0
+ ip address 10.1.4.2 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Ethernet0/1
+ ip address 10.1.4.10 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Ethernet0/2
+ ip address 198.18.0.1 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+!
+interface Ethernet0/3
+ ip address 10.1.4.17 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Ethernet1/0
+ ip address 10.1.4.25 255.255.255.252
+ shutdown
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+!
+router eigrp DMVPN
+ !
+ address-family ipv4 unicast autonomous-system 1
+  !
+  af-interface Tunnel100
+   summary-address 0.0.0.0 0.0.0.0
+  exit-af-interface
+  !
+  topology base
+   redistribute ospf 1
+  exit-af-topology
+  network 10.1.0.0 0.0.255.255
+  network 10.200.0.0 0.0.0.255
+ exit-address-family
+!
+router ospf 1
+ area 101 stub no-summary
+ redistribute eigrp 1 metric 111 subnets
+ redistribute bgp 1001 subnets
+ network 10.1.4.0 0.0.0.3 area 0
+ network 10.1.4.8 0.0.0.3 area 0
+ network 10.1.4.16 0.0.0.3 area 101
+ network 10.1.255.0 0.0.0.255 area 0
+!
+router bgp 1001
+ bgp log-neighbor-changes
+ neighbor 10.1.255.15 remote-as 1001
+ neighbor 10.1.255.15 update-source Loopback0
+ neighbor 198.18.0.2 remote-as 101
+ !
+ address-family ipv4
+  network 10.1.0.0 mask 255.255.0.0
+  network 198.18.0.0
+  network 198.18.0.0 mask 255.255.255.252
+  neighbor 10.1.255.15 activate
+  neighbor 198.18.0.2 activate
+  neighbor 198.18.0.2 prefix-list DEFAULT in
+  neighbor 198.18.0.2 route-map GlobalMap out
+ exit-address-family
+!
+ip forward-protocol nd
+!
+ip as-path access-list 1 permit ^$
+!
+ip http server
+no ip http secure-server
+ip nat inside source route-map NAT-BYPASS interface Ethernet0/2 overload
+ip route 10.1.0.0 255.255.0.0 Null0
+!
+!
+ip prefix-list DEFAULT seq 10 permit 0.0.0.0/0 le 32
+!
+route-map 1 permit 10
+ match as-path 1
+!
+route-map GlobalMap permit 10
+ set as-path prepend 1001
+!
+route-map NAT-BYPASS permit 10
+ match ip address 101
+!
+!
+access-list 1 permit 10.1.0.0 0.0.255.255
+access-list 101 deny   gre any any
+access-list 101 deny   ip 10.1.0.0 0.0.255.255 172.16.0.0 0.0.255.255
+access-list 101 deny   ip 10.1.255.0 0.0.0.255 any
+access-list 101 permit ip 10.1.0.0 0.0.255.255 any
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login
+ transport input none
+!
+ntp authentication-key 1 md5 04743F333C 7
+ntp authenticate
+ntp trusted-key 1
+ntp server 10.1.255.12 prefer
+ntp server 10.1.255.13
+!
+end

@@ -1,0 +1,194 @@
+R18#show run
+Building configuration...
+
+Current configuration : 3137 bytes
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R18
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+crypto isakmp policy 10
+ encr aes
+ hash sha256
+ authentication pre-share
+crypto isakmp key OTUS address 198.18.0.5
+!
+!
+crypto ipsec transform-set TRANSORM esp-aes esp-sha-hmac
+ mode transport
+!
+!
+!
+crypto map MAP local-address Ethernet0/2
+crypto map MAP 10 ipsec-isakmp
+ set peer 198.18.0.5
+ set transform-set TRANSORM
+ match address 102
+!
+!
+!
+!
+!
+interface Tunnel100
+ ip address 10.100.0.18 255.255.255.0
+ ip mtu 1400
+ ip tcp adjust-mss 1360
+ ip ospf cost 1
+ tunnel source 198.19.5.2
+ tunnel destination 198.18.0.5
+!
+interface Ethernet0/0
+ description TO_R16
+ ip address 172.16.4.2 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Ethernet0/1
+ description TO_R17
+ ip address 172.16.4.10 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Ethernet0/2
+ description TO_AS520_R24
+ ip address 198.19.5.2 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+ crypto map MAP
+!
+interface Ethernet0/3
+ description TO_AS520_R26
+ ip address 198.19.6.2 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+ shutdown
+!
+!
+router eigrp LAB
+ !
+ address-family ipv4 unicast autonomous-system 1
+  !
+  topology base
+   redistribute bgp 2042 metric 10000 100 255 1 1500
+   redistribute ospf 1 metric 10000 100 255 1 1500
+  exit-af-topology
+  network 10.100.0.0 0.0.0.255
+  network 172.16.4.0 0.0.0.3
+  network 172.16.4.8 0.0.0.3
+ exit-address-family
+!
+router ospf 1
+ redistribute eigrp 1 metric 10 subnets
+ network 10.100.0.0 0.0.0.255 area 0
+!
+router bgp 2042
+ bgp log-neighbor-changes
+ neighbor 198.19.5.1 remote-as 520
+ neighbor 198.19.6.1 remote-as 520
+ !
+ address-family ipv4
+  network 172.16.0.0
+  network 198.19.5.0 mask 255.255.255.252
+  network 198.19.6.0 mask 255.255.255.252
+  redistribute eigrp 1
+  neighbor 198.19.5.1 activate
+  neighbor 198.19.5.1 route-map 2 out
+  neighbor 198.19.6.1 activate
+  neighbor 198.19.6.1 route-map 2 out
+  maximum-paths 2
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip nat pool NAT_R18 172.16.100.100 172.16.100.104 netmask 255.255.255.0
+ip nat inside source route-map NAT-BYPASS interface Ethernet0/2 overload
+ip route 172.16.0.0 255.255.0.0 Null0
+!
+!
+ip prefix-list OUT seq 5 permit 172.16.0.0/16 le 32
+!
+route-map 1 permit 10
+ match as-path 1
+!
+route-map 2 permit 10
+ match ip address prefix-list OUT
+!
+route-map NAT-BYPASS permit 10
+ match ip address 101
+!
+!
+access-list 101 deny   gre any any
+access-list 101 deny   ip 10.100.0.0 0.0.0.255 any
+access-list 101 permit ip 172.16.0.0 0.0.255.255 any
+access-list 102 permit gre host 198.19.5.2 host 198.18.0.5
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login
+ transport input none
+!
+!
+end

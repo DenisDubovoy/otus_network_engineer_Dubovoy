@@ -1,0 +1,214 @@
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R12
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+ip dhcp excluded-address 10.1.1.1
+ip dhcp excluded-address 10.1.2.1
+ip dhcp excluded-address 10.1.3.1
+ip dhcp excluded-address 10.1.2.254
+ip dhcp excluded-address 10.1.3.254
+!
+ip dhcp pool VPC1
+ network 10.1.2.0 255.255.255.0
+ default-router 10.1.2.254
+!
+ip dhcp pool VPC7
+ network 10.1.3.0 255.255.255.0
+ default-router 10.1.3.254
+!
+!
+!
+no ip domain lookup
+ip domain name moscow.ru
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+crypto pki server R12
+ database level complete
+ no database archive
+ lifetime crl 1
+!
+crypto pki trustpoint R12
+ revocation-check crl
+ rsakeypair R12
+!
+!
+crypto pki certificate chain R12
+ certificate ca 01
+  308202FA 308201E2 A0030201 02020101 300D0609 2A864886 F70D0101 04050030
+  0E310C30 0A060355 04031303 52313230 1E170D32 35303332 34303535 3232315A
+  170D3238 30333233 30353532 32315A30 0E310C30 0A060355 04031303 52313230
+  82012230 0D06092A 864886F7 0D010101 05000382 010F0030 82010A02 82010100
+  A8CA8131 82BE91A5 92284DDF D0A97272 3B0185B3 5130A115 41131C59 3A12D894
+  CE93183E DC308BFC 5AA94168 DBD862DD CB8B783E AE4A64A1 45A3A3F5 C8B9B776
+  2DAF4FC8 AB503906 9B185737 FF3E250B 26C7A912 AC0CC8FE 1F9B68BA 7137D1A5
+  2B11848D D5828650 51500B58 274A23A9 FE669814 2455DA04 1DA9D61E 642C5334
+  EF106C82 B2CAD003 4A922032 703BD0BF 0CB12F1B CA8ABDA7 B5999A55 B2C7EECC
+  22D5A993 19368DB1 E03CD646 44788E5A 23EB2A18 68FF6669 44FBFB97 91991FFE
+  B5AD4FB1 C8B95CD4 EC3A41DD 90727A65 D9D50370 38658188 A901E041 040CCC7E
+  380BE1B1 4F7B539E 955BE073 C373CE42 78E6859D 4423E8B1 EA2A7E7C 3DDF76B1
+  02030100 01A36330 61300F06 03551D13 0101FF04 05300301 01FF300E 0603551D
+  0F0101FF 04040302 0186301F 0603551D 23041830 16801488 82EAD762 29AFBD5C
+  45A27EAA A1FE1E28 8A89F030 1D060355 1D0E0416 04148882 EAD76229 AFBD5C45
+  A27EAAA1 FE1E288A 89F0300D 06092A86 4886F70D 01010405 00038201 010023E4
+  E49B9341 17D5A43E 248EC3CF BC02BAB0 ECADD5AD B957613D BD5E255D 60395BE6
+  3F2460B3 D7E7273D 51007BE6 789D5822 BC80D7B7 D1DF0E2A BB9A6606 4957B164
+  AD1D36FD 41E42F85 A43E3BCD 8BD15819 375AD5A0 166575DC 436ADA6B A802A737
+  4EE1C6A0 54577105 7769B11E C73D4E5C 895A7C88 FBB53A7A 5012849A 1BF51674
+  B00E57D1 9E617C77 AA43CD6A 009E65C0 A2A213AF EA667F55 489D2E31 A0574CEB
+  FA5728EF 4ADD1C6D 7D16F01D 00D1E1C6 83B7FF11 20A866FA 06FB4F28 E7C08942
+  E8B2503D 17811FF4 172F9A59 A8A834DE 8D5BAD21 6CC2A6F6 7CBAC211 DF9ECFB2
+  6B0591E4 834DF55E F7D9F997 C6873799 12B55E77 B4C00CDC 85199163 D2EB
+        quit
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 10.1.255.12 255.255.255.255
+ ip ospf 1 area 0
+!
+interface Ethernet0/0
+ no ip address
+!
+interface Ethernet0/0.10
+ description VLAN10_MANAGEMENT
+ encapsulation dot1Q 10
+ ip address 10.1.1.1 255.255.255.0
+ vrrp 10 ip 10.1.1.254
+ vrrp 10 priority 110
+ vrrp 10 authentication md5 key-string PASSWORD_VLAN10_MANAGEMENT
+!
+interface Ethernet0/0.20
+ description VLAN20_SEGMENT
+ encapsulation dot1Q 20
+ ip address 10.1.2.1 255.255.255.0
+ vrrp 20 ip 10.1.2.254
+ vrrp 20 priority 110
+ vrrp 20 authentication md5 key-string PASSWORD_VLAN20
+!
+interface Ethernet0/0.30
+ description VLAN30_SEGMENT
+ encapsulation dot1Q 30
+ ip address 10.1.3.1 255.255.255.0
+ vrrp 30 ip 10.1.3.254
+ vrrp 30 priority 110
+ vrrp 30 authentication md5 key-string PASSWORD_VLAN30
+!
+interface Ethernet0/0.99
+ description NATIVE
+ encapsulation dot1Q 99 native
+!
+interface Ethernet0/1
+ no ip address
+ shutdown
+!
+interface Ethernet0/2
+ description TO_R14
+ ip address 10.1.4.1 255.255.255.252
+!
+interface Ethernet0/3
+ description TO_R15
+ ip address 10.1.4.5 255.255.255.252
+!
+interface Ethernet1/0
+ no ip address
+ shutdown
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+router ospf 1
+ area 10 stub
+ network 10.1.1.0 0.0.0.255 area 10
+ network 10.1.2.0 0.0.0.255 area 10
+ network 10.1.3.0 0.0.0.255 area 10
+ network 10.1.4.0 0.0.0.3 area 0
+ network 10.1.4.4 0.0.0.3 area 0
+!
+ip forward-protocol nd
+!
+!
+ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login
+ transport input none
+!
+ntp authentication-key 1 md5 072015797D 7
+ntp authenticate
+ntp trusted-key 1
+ntp source Loopback0
+ntp master
+!
+end

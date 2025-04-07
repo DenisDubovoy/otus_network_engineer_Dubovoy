@@ -1,0 +1,205 @@
+R15#show run
+Building configuration...
+
+Current configuration : 3450 bytes
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R15
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip domain name moscow.ru
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+crypto isakmp policy 10
+ encr aes
+ hash sha256
+ authentication pre-share
+crypto isakmp key OTUS address 198.19.5.2
+!
+!
+crypto ipsec transform-set TRANSORM esp-aes esp-sha-hmac
+ mode transport
+!
+!
+!
+crypto map MAP 10 ipsec-isakmp
+ set peer 198.19.5.2
+ set transform-set TRANSORM
+ match address 102
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 10.1.255.15 255.255.255.255
+!
+interface Tunnel100
+ ip address 10.100.0.15 255.255.255.0
+ ip mtu 1400
+ ip tcp adjust-mss 1360
+ ip ospf cost 1
+ tunnel source 198.18.0.5
+ tunnel destination 198.19.5.2
+!
+interface Ethernet0/0
+ description TO_R13
+ ip address 10.1.4.14 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Ethernet0/1
+ description TO_R12
+ ip address 10.1.4.6 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Ethernet0/2
+ description TO_AS301_R21
+ ip address 198.18.0.5 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+ crypto map MAP
+!
+interface Ethernet0/3
+ description TO_R20
+ ip address 10.1.4.21 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Ethernet1/0
+ ip address 10.1.4.26 255.255.255.252
+ shutdown
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+router ospf 1
+ area 102 filter-list prefix area_102 in
+ redistribute bgp 1001 subnets
+ network 10.1.4.4 0.0.0.3 area 0
+ network 10.1.4.12 0.0.0.3 area 0
+ network 10.1.4.20 0.0.0.3 area 102
+ network 10.1.255.0 0.0.0.255 area 0
+ network 10.100.0.0 0.0.0.255 area 0
+!
+router bgp 1001
+ bgp log-neighbor-changes
+ neighbor 10.1.255.14 remote-as 1001
+ neighbor 10.1.255.14 update-source Loopback0
+ neighbor 198.18.0.6 remote-as 301
+ !
+ address-family ipv4
+  network 10.1.0.0 mask 255.255.0.0
+  network 198.18.0.4 mask 255.255.255.252
+  neighbor 10.1.255.14 activate
+  neighbor 198.18.0.6 activate
+  neighbor 198.18.0.6 prefix-list DEFAULTandPITER in
+  neighbor 198.18.0.6 route-map 1 out
+ exit-address-family
+!
+ip forward-protocol nd
+!
+ip as-path access-list 1 permit ^$
+!
+ip http server
+no ip http secure-server
+ip nat inside source list 101 interface Ethernet0/2 overload
+ip nat inside source route-map NAT-BYPASS interface Ethernet0/2 overload
+ip route 10.1.0.0 255.255.0.0 Null0
+ip route 10.100.0.0 255.255.255.0 Tunnel100
+!
+!
+ip prefix-list DEFAULTandPITER seq 10 permit 0.0.0.0/0 le 32
+ip prefix-list DEFAULTandPITER seq 20 permit 172.16.0.0/16 le 32
+!
+ip prefix-list area_102 seq 10 deny 10.1.4.16/30
+ip prefix-list area_102 seq 15 permit 0.0.0.0/0 le 32
+!
+route-map 1 permit 10
+ match as-path 1
+!
+route-map NAT-BYPASS permit 10
+ match ip address 101
+!
+!
+access-list 101 deny   gre any any
+access-list 101 deny   ip 10.1.0.0 0.0.255.255 172.16.0.0 0.0.255.255
+access-list 101 deny   ip 10.1.255.0 0.0.0.255 any
+access-list 101 permit ip 10.1.0.0 0.0.255.255 any
+access-list 102 permit gre any any
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login
+ transport input none
+!
+!
+end

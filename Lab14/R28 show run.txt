@@ -1,0 +1,292 @@
+R28#show run
+Building configuration...
+
+Current configuration : 7809 bytes
+!
+! Last configuration change at 15:02:18 UTC Mon Apr 7 2025
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R28
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip domain name CHOKURDACH
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+crypto pki trustpoint R28
+ enrollment url http://10.1.255.12:80
+ serial-number
+ revocation-check crl
+!
+!
+crypto pki certificate chain R28
+ certificate 03
+  30820308 308201F0 A0030201 02020103 300D0609 2A864886 F70D0101 05050030
+  0E310C30 0A060355 04031303 52313230 1E170D32 35303332 34303633 3332345A
+  170D3236 30333234 30363333 32345A30 30312E30 0F060355 04051308 36373130
+  39333132 301B0609 2A864886 F70D0109 02160E52 32382E43 484F4B55 52444143
+  48308201 22300D06 092A8648 86F70D01 01010500 0382010F 00308201 0A028201
+  0100D385 3045AB38 71FA233A EF8E8791 CF7353DD 49C44B84 0FBA2C79 E860D078
+  B55B5E91 08986FFA DC756761 176692E7 E4DB0541 21E2B513 C7171B95 1EAAFE8A
+  2F3CB1B6 F3B5D13A CF439928 55CD417F F9A87A67 36AB41E3 A11DCEB3 96C70C04
+  7AFC470D 6D2DB95A 6C155ABE 71159996 9BEE9061 D5F1EEC8 1FF9EDFC A2122E69
+  44ED2F24 D206D83C B8867DC2 C89CED24 B7362587 CD186BD9 FB1EF8DE 8A194385
+  1C81A82F A2C1AF77 DF77EAC3 1DACBD9E 2D1AC7BB 8DB41C0D 2E06BBC4 84B6CB1F
+  5CE37657 625268E8 8002376C 5E4E5F83 E398EF68 9C5B4E05 3E9E9252 72A5580A
+  296D357D 05C34951 39F1520C 819B5880 52B82563 0ED254DF 1A38835B A500B25E
+  CE670203 010001A3 4F304D30 0B060355 1D0F0404 030205A0 301F0603 551D2304
+  18301680 148882EA D76229AF BD5C45A2 7EAAA1FE 1E288A89 F0301D06 03551D0E
+  04160414 771A723A 70A3ED11 99B3FC60 3119405E 6DBF13A8 300D0609 2A864886
+  F70D0101 05050003 82010100 17781616 7B6309B5 91D25B5D 67D47854 2259A857
+  B1E78C97 23C0F784 D32FF1EB ADF8FC9A 2DF431FE 27B76D4F 664F8918 0F1EDBD1
+  83CD3278 4698CF4A C07C1264 4B2227EA BDCB4534 F720E273 690B0ED7 F511A654
+  52D9A36F F58FD1BF 8E1417CD 33544106 F44626B2 AF4A7CF6 304F59F3 614B9D62
+  6DFE54D3 2E6E0786 5DD091DD 18D4B1A7 647F3EFD BC44C9B6 F03B22EC C4CD2DE4
+  68FE1B86 4C4D4F01 02B4999B 56EAFDD0 A6D08588 AB493177 CF2C60CF D21ED6DF
+  5F430D02 8818F3AD 876D715C B5E63754 D83A5C63 62D433AB 457A3714 238F55EC
+  F86683B8 743D9840 8C41A5FB 82794129 C99B36C1 AFD78E13 CD5023EA 0AA17516
+  2B27909B D7142B6F EE5476BF
+        quit
+ certificate ca 01
+  308202FA 308201E2 A0030201 02020101 300D0609 2A864886 F70D0101 04050030
+  0E310C30 0A060355 04031303 52313230 1E170D32 35303332 34303535 3232315A
+  170D3238 30333233 30353532 32315A30 0E310C30 0A060355 04031303 52313230
+  82012230 0D06092A 864886F7 0D010101 05000382 010F0030 82010A02 82010100
+  A8CA8131 82BE91A5 92284DDF D0A97272 3B0185B3 5130A115 41131C59 3A12D894
+  CE93183E DC308BFC 5AA94168 DBD862DD CB8B783E AE4A64A1 45A3A3F5 C8B9B776
+  2DAF4FC8 AB503906 9B185737 FF3E250B 26C7A912 AC0CC8FE 1F9B68BA 7137D1A5
+  2B11848D D5828650 51500B58 274A23A9 FE669814 2455DA04 1DA9D61E 642C5334
+  EF106C82 B2CAD003 4A922032 703BD0BF 0CB12F1B CA8ABDA7 B5999A55 B2C7EECC
+  22D5A993 19368DB1 E03CD646 44788E5A 23EB2A18 68FF6669 44FBFB97 91991FFE
+  B5AD4FB1 C8B95CD4 EC3A41DD 90727A65 D9D50370 38658188 A901E041 040CCC7E
+  380BE1B1 4F7B539E 955BE073 C373CE42 78E6859D 4423E8B1 EA2A7E7C 3DDF76B1
+  02030100 01A36330 61300F06 03551D13 0101FF04 05300301 01FF300E 0603551D
+  0F0101FF 04040302 0186301F 0603551D 23041830 16801488 82EAD762 29AFBD5C
+  45A27EAA A1FE1E28 8A89F030 1D060355 1D0E0416 04148882 EAD76229 AFBD5C45
+  A27EAAA1 FE1E288A 89F0300D 06092A86 4886F70D 01010405 00038201 010023E4
+  E49B9341 17D5A43E 248EC3CF BC02BAB0 ECADD5AD B957613D BD5E255D 60395BE6
+  3F2460B3 D7E7273D 51007BE6 789D5822 BC80D7B7 D1DF0E2A BB9A6606 4957B164
+  AD1D36FD 41E42F85 A43E3BCD 8BD15819 375AD5A0 166575DC 436ADA6B A802A737
+  4EE1C6A0 54577105 7769B11E C73D4E5C 895A7C88 FBB53A7A 5012849A 1BF51674
+  B00E57D1 9E617C77 AA43CD6A 009E65C0 A2A213AF EA667F55 489D2E31 A0574CEB
+  FA5728EF 4ADD1C6D 7D16F01D 00D1E1C6 83B7FF11 20A866FA 06FB4F28 E7C08942
+  E8B2503D 17811FF4 172F9A59 A8A834DE 8D5BAD21 6CC2A6F6 7CBAC211 DF9ECFB2
+  6B0591E4 834DF55E F7D9F997 C6873799 12B55E77 B4C00CDC 85199163 D2EB
+        quit
+!
+redundancy
+!
+!
+track 1 ip sla 1 reachability
+!
+track 2 ip sla 2 reachability
+!
+!
+!
+!
+!
+!
+crypto isakmp policy 10
+ encr aes
+ hash sha256
+ group 5
+!
+!
+crypto ipsec transform-set VTI esp-aes esp-sha-hmac
+ mode transport
+!
+crypto ipsec profile DMVPN
+ set transform-set VTI
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 10.52.2.1 255.255.255.255
+!
+interface Tunnel100
+ ip address 10.200.0.28 255.255.255.0
+ ip mtu 1400
+ ip nhrp map multicast 198.18.0.1
+ ip nhrp map 10.200.0.14 198.18.0.1
+ ip nhrp network-id 100
+ ip nhrp nhs 10.200.0.14
+ ip nhrp registration no-unique
+ ip tcp adjust-mss 1360
+ tunnel source Ethernet0/0
+ tunnel destination 198.18.0.1
+ tunnel protection ipsec profile DMVPN
+!
+interface Ethernet0/0
+ description TO_R25
+ ip address 192.168.2.1 255.255.255.252
+!
+interface Ethernet0/1
+ description TO_R26
+ ip address 192.168.3.1 255.255.255.252
+!
+interface Ethernet0/2
+ no ip address
+!
+interface Ethernet0/2.10
+ description VLAN10_MANAGEMENT
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+!
+interface Ethernet0/2.20
+ description VLAN20_SEGMENT_VPC30
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0
+ ip policy route-map PBR-VLAN20
+!
+interface Ethernet0/2.30
+ description VLAN30_SEGMENT_VPC31
+ encapsulation dot1Q 30
+ ip address 192.168.30.1 255.255.255.0
+ ip policy route-map PBR-VLAN30
+!
+interface Ethernet0/2.99
+ description NATIVE
+ encapsulation dot1Q 99 native
+!
+interface Ethernet0/3
+ no ip address
+ shutdown
+!
+interface Ethernet1/0
+ no ip address
+ shutdown
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+!
+router eigrp DMVPN
+ !
+ address-family ipv4 unicast autonomous-system 1
+  !
+  topology base
+  exit-af-topology
+  network 10.200.0.0 0.0.0.255
+  network 192.168.10.0
+  network 192.168.20.0
+  network 192.168.30.0
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 0.0.0.0 0.0.0.0 192.168.2.2 track 1
+ip route 0.0.0.0 0.0.0.0 192.168.3.2 track 2
+ip route 10.255.255.27 255.255.255.255 Tunnel100
+!
+ip sla 1
+ icmp-echo 192.168.2.2 source-ip 192.168.2.1
+ frequency 5
+ip sla schedule 1 life forever start-time now
+ip sla 2
+ icmp-echo 192.168.3.2 source-ip 192.168.3.1
+ frequency 5
+ip sla schedule 2 life forever start-time now
+!
+route-map PBR-VLAN20 permit 10
+ match ip address 20
+ set ip next-hop verify-availability 192.168.2.2 10 track 1
+ set ip next-hop 192.168.3.2
+!
+route-map PBR-VLAN30 permit 10
+ match ip address 30
+ set ip next-hop verify-availability 192.168.3.2 10 track 2
+ set ip next-hop 192.168.2.2
+!
+!
+access-list 20 permit 192.168.20.0 0.0.0.255
+access-list 30 permit 192.168.30.0 0.0.0.255
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login
+ transport input none
+!
+ntp authentication-key 1 md5 04743F333C 7
+ntp authenticate
+ntp trusted-key 1
+ntp server 10.1.255.12 prefer
+ntp server 10.1.255.13
+event manager applet WAN_FAILOVER_PRIMARY_DOWN
+ event track 1 state down
+ action 1.0 cli command "enable"
+ action 2.0 cli command "configure terminal"
+ action 3.0 cli command "interface Tunnel100"
+ action 4.0 cli command "tunnel source Ethernet0/1"
+ action 5.0 cli command "end"
+event manager applet WAN_FAILOVER_PRIMARY_UP
+ event track 1 state up
+ action 1.0 cli command "enable"
+ action 2.0 cli command "configure terminal"
+ action 3.0 cli command "interface Tunnel100"
+ action 4.0 cli command "tunnel source Ethernet0/0"
+ action 5.0 cli command "end"
+!
+end
